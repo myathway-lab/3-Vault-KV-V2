@@ -1,7 +1,7 @@
 # Vault-KV-V2
 
 
-### vault secrets enable & write & read
+### 1) vault secrets enable & write & read
 
 - Enable kv v2 secrets engine at DB-Team/ path.
 - Enable kv v1 secrets engine at  DB-Team2/ path.
@@ -55,7 +55,7 @@ delete_version_after    0s
 max_versions            5
 ```
 
-### vault kv put & get
+### 2) vault kv put & get
 
 - Add the new secret in DB-Team2/
 
@@ -260,7 +260,7 @@ myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/5ba45d66-ac99-49df-be75-1620415b53ff)
 
-### vault kv delete
+### 3) vault kv delete
 
 - Delete the data in DB-Team2/data/Data/dabe-info.
 
@@ -390,7 +390,7 @@ username    admi1
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$
 ```
 
-### vault kv destroy
+### 4) vault kv destroy
 
 - Destroy version 6. It will be permanently destroyed and cannot be restored.
 
@@ -433,7 +433,7 @@ version            6
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/2b850879-ce6d-4f8f-823a-d665f0fa898a)
 
-### vault kv metadata
+### 5) vault kv metadata
 
 - Delete the secret DB-Team2/metadata/Data/dabe-info.
 
@@ -446,7 +446,7 @@ Success! Data deleted (if it existed) at: DB-Team2/metadata/Data/dabe-info
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/e44aa41c-3c2a-4236-a029-225bd1573528)
 
-### delete_version_after
+### 6) delete_version_after
 
 - Set automatic deletion of versions after the fixed time period.
 - Now we will set 60s to delete data in DB-Team2/metadata/Data/dabe-info.
