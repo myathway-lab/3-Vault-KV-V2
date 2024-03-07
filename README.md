@@ -348,12 +348,14 @@ We can see Version7 was deleted.**
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/fe32828b-4f07-41e6-82e7-7d53c001d49f)
 
- <br>\ 
+ <br>
+ 
 **We can Undelete the version7 until we destroyed.**
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/e6ae0e94-b89e-44d3-ba1b-25a681e5ea3a)
 
- <br>\ 
+ <br>
+ 
 **But We still can read the old versions metadata as below.**
 
 ```yaml
@@ -394,9 +396,10 @@ Key         Value
 password    2222
 username    admi1
 ```
- <br>
+
+<br>
  
-**Now, let's update the data Without destroying the version 7.***
+**Now, let's update the data without destroying the version 7.***
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv put DB-Team2/Data/dabe-info username="admi1" password="dfkd"
@@ -414,7 +417,7 @@ version            8
 ```
  <br>
  
-**we can see total 8 versions. version 7 was not replaced. It created version 8 for the new data.**
+**We can see total 8 versions. version 7 was not replaced. It created version 8 for the new data.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  --version=7 DB-Team2/Data/dabe-info
