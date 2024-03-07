@@ -1,10 +1,24 @@
 # Vault-KV-V2
+<br>
 
+## Summary
+**In this lab, we will test below scenerios step by step.**
 
-### 1) vault secrets enable & write & read
+**- vault secrets enable & write & read** <br>
+**- vault kv put & get** <br>
+**- vault kv delete** <br> 
+**- vault kv destroy** <br>
+**- vault kv destroy** <br>
+**- vault kv metadata** <br>
+**- delete_version_after** <br>
+<br>
 
+### 1) How to enable & write & read vault secrets 
+
+**Enable secret using Path & versoins**
 - Enable kv v2 secrets engine at DB-Team/ path.
 - Enable kv v1 secrets engine at  DB-Team2/ path.
+<br>
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault secrets enable --version=2 --path=DB-Team kv
@@ -24,7 +38,11 @@ secret/       kv           kv_966419c8           key/value secret storage
 sys/          system       system_59797446       system endpoints used for control, policy and debugging
 ```
 
-- if the kv version is v1, we can upgrade it to v2 as below:
+<br>
+
+**We can upgrade V1 to V2 as below.**
+
+<br>
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv enable-versioning DB-Team2/
@@ -38,11 +56,18 @@ delete_version_after    0s
 max_versions            0
 ```
 
+<br>
+
+
 cas - stands for Check-and-Set which is used to protect from being overwritten unintentionally. 
 
 delete_version_after  is set to 0s which means Vault will delete versions after 0s.
 
 max_versions is set 0 which means there is no limit on versions. All the versions will be kept. 
+
+<br>
+
+**We can limit the max version as below.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault write DB-Team2/config/ max_versions=5
@@ -55,9 +80,11 @@ delete_version_after    0s
 max_versions            5
 ```
 
+<br>
+
 ### 2) vault kv put & get
 
-- Add the new secret in DB-Team2/
+**We can add secrets in DB-Team2/ as below.** 
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv put DB-Team2/members/James FullName="Jame Liew"
@@ -73,6 +100,12 @@ deletion_time      n/a
 destroyed          false
 version            1
 
+```
+<br>
+
+**We can read secrets in DB-Team2/ as below**
+
+```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  DB-Team2/members/James
 ======= Secret Path =======
 DB-Team2/data/members/James
@@ -90,7 +123,11 @@ version            1
 Key         Value
 ---         -----
 FullName    Jame Liew
+```
 
+**Let's put new secret date-info under DB-Team2**
+
+```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv put DB-Team2/Data/dabe-info username="sa" password="fsjldkj"
 ======== Secret Path ========
 DB-Team2/data/Data/dabe-info
@@ -106,7 +143,9 @@ version            1
 
 ```
 
-- Update the values in DB-Team2/Data/dabe-info secret. Then we can see version changed to 2.
+
+**Then let's try to update the values in secret. <br>
+Verify the version was changed to 2.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv put DB-Team2/Data/dabe-info username="sa" password="00002"
@@ -121,7 +160,13 @@ custom_metadata    <nil>
 deletion_time      n/a
 destroyed          false
 version            2
+```
 
+<br>
+
+**Let's update till we see the version is 5.**
+
+```yaml
 vault kv put DB-Team2/Data/dabe-info username="sa" password="00002"
 vault kv put DB-Team2/Data/dabe-info username="admin" password="11232"
 vault kv put DB-Team2/Data/dabe-info username="admi1" password="11232"
@@ -142,12 +187,12 @@ version            5
 ====== Data ======
 Key         Value
 ---         -----
-password    2222
+password    11232
 username    admi1
 ```
 
-- We have 5 versions in DB-Team2/Data/dabe-info.
-- We can read older versions as below.
+**Now we have 5 versions in DB-Team2/Data/dabe-info. <br>
+We can read older versions as below.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  --version=1 DB-Team2/Data/dabe-info
@@ -208,7 +253,8 @@ password    11232
 username    admi1
 ```
 
-- Update the values and see the oldest version was deleted.
+
+**Let's update the values more time and see the oldest version was deleted.**
 
 ```yaml
 vault kv put DB-Team2/Data/dabe-info username="admi1" password="dfkdfs"
@@ -232,6 +278,13 @@ Key         Value
 ---         -----
 password    dfkd
 username    admi1
+```
+<br>
+
+**We updated the values 2 times and now version 1&2 was deleted alread.**
+
+
+```yaml
 
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  --version=1 DB-Team2/Data/dabe-info
 No value found at DB-Team2/data/Data/dabe-info
@@ -260,16 +313,20 @@ myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/5ba45d66-ac99-49df-be75-1620415b53ff)
 
+<br>
+
+
 ### 3) vault kv delete
 
-- Delete the data in DB-Team2/data/Data/dabe-info.
+**Delete the data in DB-Team2/data/Data/dabe-info.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv delete DB-Team2/Data/dabe-info
 Success! Data deleted (if it existed) at: DB-Team2/data/Data/dabe-info
 ```
+<br>
 
-- We can see there is no more data in DB-Team2/Data/dabe-info.
+**We can see there is no more data in DB-Team2/Data/dabe-info.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get DB-Team2/Data/dabe-info
@@ -286,16 +343,18 @@ destroyed          false
 version            7
 ```
 
-- Let’s verify from UI.
-- We can see Version7 was deleted.
+**Let’s verify from UI. <br>
+We can see Version7 was deleted.**
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/fe32828b-4f07-41e6-82e7-7d53c001d49f)
 
-- But we can Undelete the version7 until we destroyed.
+ <br>\ 
+**We can Undelete the version7 until we destroyed.**
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/e6ae0e94-b89e-44d3-ba1b-25a681e5ea3a)
 
-- We still can read the old versions metadata as below.
+ <br>\ 
+**But We still can read the old versions metadata as below.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  --version=6 DB-Team2/Data/dabe-info
@@ -335,8 +394,9 @@ Key         Value
 password    2222
 username    admi1
 ```
-
-- Without destroying the version7, we will update the data as below.
+ <br>
+ 
+**Now, let's update the data Without destroying the version 7.***
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv put DB-Team2/Data/dabe-info username="admi1" password="dfkd"
@@ -352,8 +412,9 @@ deletion_time      n/a
 destroyed          false
 version            8
 ```
-
-- Now we have total 8 versions. And version7 was not replaced. It created version 8 for the new data.
+ <br>
+ 
+**we can see total 8 versions. version 7 was not replaced. It created version 8 for the new data.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  --version=7 DB-Team2/Data/dabe-info
@@ -389,10 +450,11 @@ password    dfkd
 username    admi1
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$
 ```
-
+ <br>
+ 
 ### 4) vault kv destroy
 
-- Destroy version 6. It will be permanently destroyed and cannot be restored.
+**Destroy version 6 as below. It will be permanently deleted and cannot be restored.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  --version=6 DB-Team2/Data/dabe-info
@@ -433,30 +495,35 @@ version            6
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/2b850879-ce6d-4f8f-823a-d665f0fa898a)
 
+<br>
+
 ### 5) vault kv metadata
 
-- Delete the secret DB-Team2/metadata/Data/dabe-info.
+**Delete the secret DB-Team2/metadata/Data/dabe-info.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv metadata delete DB-Team2/Data/dabe-info
 Success! Data deleted (if it existed) at: DB-Team2/metadata/Data/dabe-info
 ```
 
-- Everything is gone. All the data inside dabe-info gone.
+**All the data "dabe-info" gone.**
 
 ![image](https://github.com/myathway-lab/3-Vault-KV-V2/assets/157335804/e44aa41c-3c2a-4236-a029-225bd1573528)
 
+<br>
+
 ### 6) delete_version_after
 
-- Set automatic deletion of versions after the fixed time period.
-- Now we will set 60s to delete data in DB-Team2/metadata/Data/dabe-info.
+**Set automatic deletion of versions after the fixed time period.** <br>
+
+**Now we will set 60s to delete data in DB-Team2/metadata/Data/dabe-info.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv metadata put --delete-version-after=60s DB-Team2/Data/dabe-info
 Success! Data written to: DB-Team2/metadata/Data/dabe-info
 ```
 
-- Now let’s update the data.
+**Now let’s put some data into dabe-info.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv put DB-Team2/Data/dabe-info username="admin" password="pass123"
@@ -473,7 +540,7 @@ destroyed          false
 version            2
 ```
 
-- Monitor if the data was deleted after 60s.
+**Monitor if the data was deleted after 60s.**
 
 ```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  DB-Team2/Data/dabe-info
@@ -494,6 +561,11 @@ Key         Value
 ---         -----
 password    pass123
 username    admin
+```
+
+**After 60s.....**
+
+```yaml
 myathway@DESKTOP-QCOTPM5:/mnt/c/WINDOWS/system32$ vault kv get  DB-Team2/Data/dabe-info
 ======== Secret Path ========
 DB-Team2/data/Data/dabe-info
